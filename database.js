@@ -1,97 +1,26 @@
-const dbConfig = require("../config/database.js");
-const oracledb = require('oracledb');
+// module.exports = {
+//   hrPool: {
+//     user: process.env.HR_USER,
+//     password: process.env.HR_PASSWORD,
+//     connectString: process.env.HR_CONNECTIONSTRING,
+//     poolMin: 10,
+//     poolMax: 10,
+//     poolIncrement: 0,
+//   },
+// };
 
-try {
-  oracledb.initOracleClient({libDir: '/Users/venkateshthammichetti/react/dailycart/webserver/instantclient_19_8'});
-} catch (err) {
-  console.error('Whoops!');
-  console.error(err);
-  process.exit(1);
-}
+// echo "export HR_USER=hr" >> ~/.bashrc
+// echo "export HR_PASSWORD=oracle" >> ~/.bashrc
+// echo "export HR_CONNECTIONSTRING=127.0.0.1/orcl" >> ~/.bashrc
+// source ~/.bashrc
 
-
-// *** Initialize conncetion pools ***
-async function initialize() {
-  const pool = await oracledb.createPool(dbConfig.hrPool);
-}
-
-module.exports.initialize = initialize;
-
-// *** Close conncetion pools ***
-
-async function close() {
-  await oracledb.getPool().close();
-}
-
-module.exports.close = close;
-
-// *** Execute SQL statements  and return result ***
-
-function simpleExecute(statement, binds = [], opts = {}) {
-  return new Promise(async (resolve, reject) => {
-    console.log(`START - simpleExecute\n`)
-    
-    let conn;
-
-    opts.outFormat = oracledb.OBJECT;
-    opts.autoCommit = false;
-
-    console.log(`Executing below SQL statement in simpleExecute ....\n\n`,statement)
-
-    try {
-      conn = await oracledb.getConnection();
-      const result = await conn.execute(statement, binds, opts);
-      resolve(result);
-    } catch (err) {
-      reject(err);
-    } finally {
-      if (conn) {
-        // conn assignment worked, need to close
-        try {
-          console.log(`\nEND - simpleExecute\n`)
-          await conn.close();
-        } catch (err) {
-          console.log("Failed - simpleExecute\n" + err);
-        }
-      }
-    }
-  });
-}
-
-module.exports.simpleExecute = simpleExecute;
-
-
-function ExecuteMany_proc(statement, binds = [], opts = {}) {
-  return new Promise(async (resolve, reject) => {
-    console.log(`START - ExecuteMany_proc \n`)
-    let conn;
-
-    opts.outFormat = oracledb.OBJECT;
-    opts.autoCommit = false;
-
-    console.log(`Executing below SQL statement in ExecuteMany_proc .... \n`,statement)
-
-    try {
-      conn = await oracledb.getConnection();
-      const result = await conn.executeMany(statement, binds, opts);
-      resolve(result);
-    } catch (err) {
-      reject(err);
-    } finally {
-      if (conn) {
-        // conn assignment worked, need to close
-        try {
-          console.log(`END - ExecuteMany_proc \n`)
-          await conn.close();
-        } catch (err) {
-          console.log("Failed - ExecuteMany_proc\n" + err);
-        }
-      }
-    }
-  });
-}
-
-module.exports.ExecuteMany_proc = ExecuteMany_proc;
-
-
-
+module.exports = {
+  hrPool: {
+    user: "venky",
+    password: "venky123456",
+    connectString: "208.109.11.24/PDB1",
+    poolMin: 10,
+    poolMax: 10,
+    poolIncrement: 0,
+  },
+};
